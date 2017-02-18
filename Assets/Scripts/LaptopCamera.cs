@@ -29,9 +29,9 @@ public class LaptopCamera : MonoBehaviour
 		if (Input.GetKey (KeyCode.DownArrow))
 			transform.position -= transform.forward * Time.deltaTime * TravelSpeed;
 		if (Input.GetKey (KeyCode.RightArrow))
-			transform.Rotate (0.0f, 10.0f * Time.deltaTime * TravelSpeed, 0.0f);
+			transform.RotateAround(transform.position, Vector3.up, 10.0f * Time.deltaTime * TravelSpeed);
 		if (Input.GetKey (KeyCode.LeftArrow))
-			transform.Rotate (0.0f, -10.0f * Time.deltaTime * TravelSpeed, 0.0f);
+			transform.RotateAround(transform.position, Vector3.up, -10.0f * Time.deltaTime * TravelSpeed);
 		if (Input.GetKey ("a"))
 			transform.position -= transform.right * Time.deltaTime * TravelSpeed;
 		if (Input.GetKey ("d"))

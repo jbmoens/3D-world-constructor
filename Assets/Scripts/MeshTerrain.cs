@@ -19,12 +19,13 @@ public class MeshTerrain : MonoBehaviour
 	// Set terrain dimensions
 	const int numberOfLanes = 50;
 	const int numberOfRows = 50;
-	const float scale = 1.0f;
+	const float hScale = 1.0f;
+	const float vScale = 2.0f;
 
 	// Derive some helpful constants
 	const int numberOfVertices = numberOfLanes * numberOfRows * 6;
 
-	const float sscale = scale * 1.0f;
+	const float sscale = hScale * 1.0f;
 	Vector3 corner1 = new Vector3 (0, 0, sscale);
 	Vector3 corner2 = new Vector3 (sscale, 0, sscale);
 	Vector3 corner3 = new Vector3 (sscale, 0, 0);
@@ -90,7 +91,7 @@ public class MeshTerrain : MonoBehaviour
 					highestCoordinates.Clear ();
 				}
 				if (pCells [i, j] == highest)
-					highestCoordinates.Add (new Vector3 ((i+0.5f)*scale, highest*scale, (j+0.5f)*scale));
+					highestCoordinates.Add (new Vector3 ((i+0.5f)*hScale, highest*hScale, (j+0.5f)*hScale));
 			}
 		return highestCoordinates;
 	}
@@ -162,7 +163,7 @@ public class MeshTerrain : MonoBehaviour
 
 	float PerlinNoise (int j, int i)
 	{
-		return PerlinNoiseVtFactor * Mathf.PerlinNoise (i * PerlinNoiseHzFactor / numberOfLanes, j * PerlinNoiseHzFactor / numberOfRows);
+		return vScale * PerlinNoiseVtFactor * Mathf.PerlinNoise (i * PerlinNoiseHzFactor / numberOfLanes, j * PerlinNoiseHzFactor / numberOfRows);
 	}
 
 	void SetBackgroundHeights ()
@@ -177,7 +178,7 @@ public class MeshTerrain : MonoBehaviour
 		for (int j = 0; j < numberOfRows; j++)
 			for (int i = 0; i < numberOfLanes; i++)
 				if (pCells [i, j] > -1)
-					heights [i, j] = heights [i + 1, j] = heights [i, j + 1] = heights [i + 1, j + 1] = scale * pCells [i, j];
+					heights [i, j] = heights [i + 1, j] = heights [i, j + 1] = heights [i + 1, j + 1] = pCells [i, j];
 	}
 
 	void BuildTerrain ()
@@ -191,7 +192,7 @@ public class MeshTerrain : MonoBehaviour
 	{
 		var index = j * numberOfLanes + i;
 		var v_index = index * 6;
-		var basePosition = new Vector3 (i * scale, 0, j * scale);
+		var basePosition = new Vector3 (i * hScale, 0, j * hScale);
 
 		// Draw triangles based on corner pattern
 		vertices [v_index] = basePosition + new Vector3 (0, heights [i, j], 0);
@@ -244,9 +245,9 @@ public class MeshTerrain : MonoBehaviour
 		for (int j = 0; j < numberOfRows; j++)
 			for (int i = 0; i < numberOfLanes; i++)
 				if (pCells [i, j] > -1) {
-					var h = pCells [i, j] * scale;
-					var pc = Instantiate (platformCell, new Vector3 (i * scale, h + pOffset, j * scale), Quaternion.identity);
-					pc.transform.localScale = new Vector3 (scale, scale, scale);
+					var h = pCells [i, j] * hScale;
+					var pc = Instantiate (platformCell, new Vector3 (i * hScale, h + pOffset, j * hScale), Quaternion.identity);
+					pc.transform.localScale = new Vector3 (hScale, hScale, hScale);
 				}
 	}
 }
