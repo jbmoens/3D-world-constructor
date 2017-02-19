@@ -22,32 +22,30 @@ public class MeshTerrain : MonoBehaviour
 	public float PerlinNoiseHzFactor = 5.0f;
 	public float PerlinNoiseVtFactor = 10.0f;
 
-	// Set terrain dimensions
-	const int numberOfLanes = 50;
-	const int numberOfRows = 50;
+	// Terrain dimensions parameters (set from GameController)
+	int numberOfLanes;
+	int numberOfRows;
+	int numberOfVertices;
 	float hScale;
 	float vScale;
 	Vector3 corner1;
 	Vector3 corner2;
 	Vector3 corner3;
 
-	// Derive some helpful constants
-	const int numberOfVertices = numberOfLanes * numberOfRows * 6;
-
 	// Define local mesh components
-	Vector3[] vertices = new Vector3[numberOfVertices];
-	int[] triangles = new int[numberOfVertices];
-	Vector3[] normals = new Vector3[numberOfVertices];
-	Vector2[] uvs = new Vector2[numberOfVertices];
+	Vector3[] vertices;
+	int[] triangles;
+	Vector3[] normals;
+	Vector2[] uvs;
 
 	// Define local altitude map
-	float[,] heights = new float[numberOfLanes + 1, numberOfRows + 1];
+	float[,] heights;
 
 	// Define map of platform cells
 	// Values:
 	// 		0 and positive: height of the platform (in integer increments)
 	// 		-1 or -2 means no platform in that spot (-2 is for a reverse triangle drawing pattern)
-	int[,] pCells = new int[numberOfLanes, numberOfRows];
+	int[,] pCells;
 
     // Use this for initialization
     void Start ()
@@ -56,9 +54,21 @@ public class MeshTerrain : MonoBehaviour
 		gc = GetComponentInParent<GameController> ();
 		hScale = gc.hScale;
 		vScale = gc.vScale;
+		numberOfLanes = gc.numberOfLanes;
+		numberOfRows = gc.numberOfRows;
 		corner1 = new Vector3 (0, 0, hScale);
 		corner2 = new Vector3 (hScale, 0, hScale);
 		corner3 = new Vector3 (hScale, 0, 0);
+		numberOfVertices = numberOfLanes * numberOfRows * 6;
+
+		vertices = new Vector3[numberOfVertices];
+		triangles = new int[numberOfVertices];
+		normals = new Vector3[numberOfVertices];
+		uvs = new Vector2[numberOfVertices];
+
+		heights = new float[numberOfLanes + 1, numberOfRows + 1];
+
+		pCells = new int[numberOfLanes, numberOfRows];
 	}
 
 	// Update is called once per frame

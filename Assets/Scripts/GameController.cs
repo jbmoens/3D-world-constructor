@@ -8,6 +8,12 @@ public class GameController : MonoBehaviour
 	public float hScale = 3.0f;
 	public float vScale = 2.0f;
 
+	// Set terrain dimensions
+	public int numberOfLanes = 50;
+	public int numberOfRows = 50;
+
+	public float treeDensity = 0.20f;
+
 	// Main game components
 	MeshTerrain meshTerrain;
 	Sentinel oSentinel;
@@ -29,7 +35,7 @@ public class GameController : MonoBehaviour
 		oTree = GetComponentInChildren<Tree> ();
 		List<GameObject> pcs = meshTerrain.platforms;
 		foreach (GameObject p in pcs)
-			oTree.Create (p.transform.position + new Vector3(0.5f * hScale, 0.05f * vScale, 0.5f * hScale));
+			if (Random.value < treeDensity) oTree.Create (p.transform.position + new Vector3(0.5f * hScale, 0.05f * vScale, 0.5f * hScale));
 		}
 	
 	// Update is called once per frame
