@@ -15,12 +15,14 @@ public class LaptopCamera : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		// Crude way of selecting a platform and changing its colour
+		// Crude way of selecting a platform and changing its colour and moving to it
 		if (Input.GetMouseButtonDown (0)) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			if (Physics.Raycast (ray, out hit) && hit.collider.tag == "Platform" && hit.normal == Vector3.up)
+			if (Physics.Raycast (ray, out hit) && hit.collider.tag == "Platform" && hit.normal == Vector3.up) {
 				hit.transform.gameObject.GetComponent<Renderer> ().material.color = Color.green;
+				transform.position = hit.transform.position + new Vector3 (0.0f, 1.5f, 0.0f);
+			}
 		}
 
 		// Simple key pressed to move the camera around the scene

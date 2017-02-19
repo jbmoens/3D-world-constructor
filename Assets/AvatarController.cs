@@ -42,12 +42,13 @@ public class AvatarController : MonoBehaviour
             laser.transform.localScale = new Vector3(0.001f, 0.001f, dist);
         }
 
-        // Quick and dirty way to select a platform
+        // Quick and dirty way to select a platform, change its colour and move onto it
         if (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) > 0.5f && touched && hit.collider.tag == "Platform" && hit.normal == Vector3.up)
         {
             var color = hit.transform.gameObject.GetComponent<Renderer>().material.color;
             color = color == Color.green ? Color.white : Color.green;
             hit.transform.gameObject.GetComponent<Renderer>().material.color = color;
+			transform.position = hit.transform.position + new Vector3 (0.0f, 1.5f, 0.0f);
         }
 
     }

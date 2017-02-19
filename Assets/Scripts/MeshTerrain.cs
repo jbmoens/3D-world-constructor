@@ -5,10 +5,16 @@ using UnityEngine;
 [RequireComponent (typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class MeshTerrain : MonoBehaviour
 {
+	// The game controller object
+	GameController gc;
+
 	// Game object representing a platform cell
 	public GameObject platformCell;
 
-	// Toggle to create platforms
+	// List of platform game objects
+	public List<GameObject> platforms;
+
+	// Some public parameters
 	public bool ShowPlatforms = true;
     const float pOffset = 0.01f;
 
@@ -19,16 +25,14 @@ public class MeshTerrain : MonoBehaviour
 	// Set terrain dimensions
 	const int numberOfLanes = 50;
 	const int numberOfRows = 50;
-	const float hScale = 1.0f;
-	const float vScale = 2.0f;
+	float hScale;
+	float vScale;
+	Vector3 corner1;
+	Vector3 corner2;
+	Vector3 corner3;
 
 	// Derive some helpful constants
 	const int numberOfVertices = numberOfLanes * numberOfRows * 6;
-
-	const float sscale = hScale * 1.0f;
-	Vector3 corner1 = new Vector3 (0, 0, sscale);
-	Vector3 corner2 = new Vector3 (sscale, 0, sscale);
-	Vector3 corner3 = new Vector3 (sscale, 0, 0);
 
 	// Define local mesh components
 	Vector3[] vertices = new Vector3[numberOfVertices];
@@ -48,6 +52,13 @@ public class MeshTerrain : MonoBehaviour
     // Use this for initialization
     void Start ()
 	{
+		platforms = new List<GameObject> ();
+		gc = GetComponentInParent<GameController> ();
+		hScale = gc.hScale;
+		vScale = gc.vScale;
+		corner1 = new Vector3 (0, 0, hScale);
+		corner2 = new Vector3 (hScale, 0, hScale);
+		corner3 = new Vector3 (hScale, 0, 0);
 	}
 
 	// Update is called once per frame
@@ -91,7 +102,7 @@ public class MeshTerrain : MonoBehaviour
 					highestCoordinates.Clear ();
 				}
 				if (pCells [i, j] == highest)
-					highestCoordinates.Add (new Vector3 ((i+0.5f)*hScale, highest*hScale, (j+0.5f)*hScale));
+					highestCoordinates.Add (new Vector3 ((i+0.5f)*hScale, highest*vScale, (j+0.5f)*hScale));
 			}
 		return highestCoordinates;
 	}
@@ -178,7 +189,7 @@ public class MeshTerrain : MonoBehaviour
 		for (int j = 0; j < numberOfRows; j++)
 			for (int i = 0; i < numberOfLanes; i++)
 				if (pCells [i, j] > -1)
-					heights [i, j] = heights [i + 1, j] = heights [i, j + 1] = heights [i + 1, j + 1] = pCells [i, j];
+					heights [i, j] = heights [i + 1, j] = heights [i, j + 1] = heights [i + 1, j + 1] = vScale * pCells [i, j];
 	}
 
 	void BuildTerrain ()
@@ -245,9 +256,10 @@ public class MeshTerrain : MonoBehaviour
 		for (int j = 0; j < numberOfRows; j++)
 			for (int i = 0; i < numberOfLanes; i++)
 				if (pCells [i, j] > -1) {
-					var h = pCells [i, j] * hScale;
+					var h = pCells [i, j] * vScale;
 					var pc = Instantiate (platformCell, new Vector3 (i * hScale, h + pOffset, j * hScale), Quaternion.identity);
-					pc.transform.localScale = new Vector3 (hScale, hScale, hScale);
+					pc.transform.localScale = new Vector3 (hScale, vScale, hScale);
+					platforms.Add (pc);
 				}
 	}
 }
